@@ -1,15 +1,11 @@
 const express = require('express');
 const app = express();
+const router = require("./router/auth-router");
 
-app.get("/", (req, res) =>{
-    res.status(200).send('server is started');
-});
+app.use("/api/auth", router);
 
-app.get("/register", (req, res) =>{
-    res.status(200).send('welcome to registeration page');
-});
 
 const PORT = 5000;
 app.listen(PORT, () =>{
-    console.log(`srever is running at port: ${PORT}`);
+    console.log(`server is running at port: ${PORT}`);
 });
