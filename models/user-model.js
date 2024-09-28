@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-
+const jwt = require("jsonwebtoken");
 
 //adding userschema
 const userSchema = new mongoose.Schema({
@@ -42,8 +42,27 @@ userSchema.pre('save', async function(next){//data save hunu vanda aagadi ya sto
     } catch (error) {
       next(error);  
     }
-})
+});
 
+    // JSON web token 
+    // JSON web token are not tipically stored in the database it is stored in the browser on the basis of cookies or localstorage 
+
+userSchema.methods.generateToken = async function () {
+    try {
+      return jwt.sign({
+        userId: this._id.toString(),
+        email: this.email,
+        isAdmin: this.isAdmin,
+      },
+      process.env.JWT_SECRET_KEY,
+      {
+        expiresIn: "360d"
+      }
+    ) ; 
+    } catch (error) {
+        console.error(error);
+    }
+};
 
 //defineing model/collection name
 const User = new mongoose.model("User", userSchema);
