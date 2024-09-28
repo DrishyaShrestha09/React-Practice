@@ -45,9 +45,45 @@ const register = async (req, res) => {
             userId: userCreated._id.toString(), // changing id to string to maintain consistency
         });
     } catch (error) {
-        res.status(400).send({ msg: "page not found" })
+        res.status(500).send({ msg: "page not found" })
     }
 
 };
 
-module.exports = { home, register };
+// USER LOGIN LOGIC
+
+
+const login = async (req, res) => {
+    try {
+        const {email, password} = req.body;
+
+        // check if user already exists
+        const userExist = await User.findOne({ email });
+        console.log(userExist);
+
+        if(!userExist){
+            return res.status(400).json({message:"Invalid Credentials"});
+        }
+
+        // Comparing password
+        const user = await bcrypt.compare(password, userExist.password);
+
+        if(user) {
+            res.status(200).json({ 
+                msg: "Login Successfull",
+                token: await userExist.generateToken(),
+                userId: userExist._id.toString(), // changing id to string to maintain consistency
+            });
+        }else{
+          res.status(401).json({message:"Invalid email or password"});
+        }
+
+
+
+    } catch (error) {
+        res.status(500).send({ msg: "page not found" }) 
+    }
+}
+
+
+module.exports = { home, register, login };
