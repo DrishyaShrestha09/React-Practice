@@ -45,7 +45,7 @@ const register = async (req, res) => {
             userId: userCreated._id.toString(), // changing id to string to maintain consistency
         });
     } catch (error) {
-        res.status(500).send({ msg: "page not found" })
+        res.status(500).json("Internal server error");
     }
 
 };
